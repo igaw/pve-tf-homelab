@@ -1,0 +1,17 @@
+---
+- name: Remove ceph repo
+  ansible.builtin.apt_repository:
+    repo: deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
+    state: absent
+    update_cache: false
+
+- name: Remove pve-enterprise repo
+  ansible.builtin.apt_repository:
+    repo: deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
+    state: absent
+    update_cache: false
+
+- name: Add pve-no-subscription repo
+  ansible.builtin.apt_repository:
+    repo: deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+    state: present

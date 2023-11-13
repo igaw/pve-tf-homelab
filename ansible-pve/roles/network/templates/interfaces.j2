@@ -1,0 +1,18 @@
+auto lo
+
+iface lo inet loopback
+
+{% for iface in proxmox_ifaces %}
+iface {{ iface }} inet manual
+
+{% endfor %}
+
+{% for vmbr in proxmox_vmbrs %}
+iface {{ vmbr.name }} inet static
+	address {{ vmbr.addr }}
+	gateway {{ vmbr.gw }}
+	bridge-ports {{ vmbr.bridge_ports }}
+	bridge-stp off
+	brdige-fd 0
+
+{% endfor %}

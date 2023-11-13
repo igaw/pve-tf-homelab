@@ -1,0 +1,2 @@
+[all]
+lithium.lan ansible_host=192.168.154.10 ansible_user=root ansible_become=true

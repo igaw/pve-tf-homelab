@@ -1,0 +1,4 @@
+---
+- name: Apply network configuration
+  shell:
+    cmd: ifreload -a

@@ -1,0 +1,56 @@
+---
+- name: Register roles
+  ansible.builtin.shell:
+    cmd: |
+      pveum role list
+  register: roles
+- name: Add TerraformProv role
+  ansible.builtin.shell:
+    cmd: |
+      pveum role add TerraformProv -privs "Datastore.AllocateSpace Datastore.Audit Pool.Allocate Sys.Audit Sys.Console Sys.Modify VM.Allocate VM.Audit VM.Clone VM.Config.CDROM VM.Config.Cloudinit VM.Config.CPU VM.Config.Disk VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Migrate VM.Monitor VM.PowerMgmt"
+  when: roles.stdout.find('TerraformProv') == -1
+
+- name: register users
+  ansible.builtin.shell:
+    cmd: |
+      pveum user list
+  register: users
+- name: Add tf-prov@pve user
+  shell: pveum user add tf-prov@pve --password terraform
+  when: users.stdout.find('tf-prov@pve') == -1
+
+- name: Register acls
+  ansible.builtin.shell:
+    cmd: |
+      pveum acl list
+  register: acls
+- name: Assign tf-prov@pve user TerraformProv role
+  shell: pveum aclmod / -user tf-prov@pve -role TerraformProv
+  when: acls.stdout.find('TerraformProv') == -1
+
+- name: Register tf-prov@pve token
+  ansible.builtin.shell:
+    cmd: |
+      pveum user token list tf-prov@pve
+  register: tf_prov_tokens
+- name: Create API token for user tf-prov@pve
+  shell: pveum user token add tf-prov@pve terraform --privsep 0
+  register: results
+  when: tf_prov_tokens.stdout.find('terraform') == -1
+- name: Show API token
+  debug:
+    msg: "{{ results.stdout }}"
+  when: results == 0
+
+- name: Register root@pam token
+  ansible.builtin.shell:
+    cmd: |
+      pveum user token list root@pam
+  register: root_tokens
+- name: Create API token for user root@pam
+  shell: pveum user token add root@pam terraform --privsep 0
+  when: root_tokens.stdout.find('terraform') == -1
+- name: debug output
+  debug:
+    msg: "{{ results.stdout }}"
+  when: results == 0

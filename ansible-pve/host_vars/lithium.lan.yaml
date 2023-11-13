@@ -1,0 +1,32 @@
+---
+proxmox_ifaces:
+  - enp0s25
+  - enp0s25.19
+  - wlp2s0
+
+proxmox_vmbrs:
+  - name: vmbr0
+    addr: 192.168.154.10/24
+    gw: 192.168.154.1
+    bridge_ports: enp0s25
+  - name: vmbr0v19
+    addr: 192.168.19.4/24
+    gw: 192.168.19.1
+    bridge_ports: enp0s25.19
+
+vm_templates:
+  - name: debian
+    id: 9000
+    url: https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2
+  - name: tumbleweed
+    id: 9001
+    url: https://download.opensuse.org/tumbleweed/appliances/openSUSE-Tumbleweed-Minimal-VM.x86_64-Cloud.qcow2
+  - name: ubuntu
+    id: 9002
+    url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+  - name: fedora
+    id: 9003
+    url: https://download.fedoraproject.org/pub/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2
+
+ct_templates:
+  - name: debian-12-standard_12.2-1_amd64.tar.zst

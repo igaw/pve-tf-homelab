@@ -1,0 +1,21 @@
+---
+- name: Update available container list
+  ansible.builtin.shell:
+    cmd: |
+      pveam update
+  changed_when: no
+
+- name: Get currently installed container list
+  ansible.builtin.shell:
+    cmd: |
+      pveam list local
+  register: existing_cts
+  changed_when: no
+
+- name: Download template containers
+  block:
+  - name: Add container to local storage
+    ansible.builtin.shell:
+      cmd: |
+        pveam download local {{ ct_name }}
+  when: existing_cts.stdout.find(ct_name) == -1

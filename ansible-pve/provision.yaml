@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - misc
+    - network
+    - updates
+    - users
+  tasks:
+    - name: Setup VM templates
+      include_role:
+        name: vm_templates
+      vars:
+        vm_name: "{{ item.name }}"
+        vm_id: "{{ item.id }}"
+        img_name: "{{ item.img_name }}"
+        img_url: "{{ item.url }}"
+        img_filename: "{{ item.url | basename }}"
+      loop: "{{ vm_templates }}"
+    - name: Setup container templates
+      include_role:
+        name: ct_templates
+      vars:
+        ct_name: "{{ item.name }}"
+      loop: "{{ ct_templates }}"

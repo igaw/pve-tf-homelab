@@ -1,0 +1,22 @@
+---
+- name: Include OS-specific tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yaml"
+
+- name: Add the user 't'
+  ansible.builtin.user:
+    name: t
+    shell: /bin/bash
+
+- name: Set authorized key taken from file
+  ansible.posix.authorized_key:
+    user: t
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_ed25519-tf.pub') }}"
+
+- name: Set root password
+  ansible.builtin.user:
+    name: root
+    password: "$6$mysecretsalt$FKKUBcVjbHASshod1GIRgwASOwKS03.ouxb6l74dOCwv/iyKPvTB60KQf/E9.XkpSBi3/BVbrt9ZqLc4pz2kn."
+
+- name: Unconditionally reboot the machine with all defaults
+  ansible.builtin.reboot:

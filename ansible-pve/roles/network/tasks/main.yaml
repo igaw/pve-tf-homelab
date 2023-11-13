@@ -1,0 +1,8 @@
+---
+- name: Network configuration
+  template:
+    dest: "{{ proxmox_interfaces }}"
+    src: interfaces.j2
+  notify:
+    - Apply network configuration
+  tags: proxmox_network
